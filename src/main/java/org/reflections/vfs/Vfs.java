@@ -60,9 +60,7 @@ public abstract class Vfs {
                     if (dir != null) return dir;
                 }
             } catch (Throwable e) {
-                if (Reflections.log != null) {
-                    Reflections.log.warn("could not create Dir using " + type + " from url " + url.toExternalForm() + ". skipping.", e);
-                }
+                e.printStackTrace();
             }
         }
 

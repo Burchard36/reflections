@@ -3,7 +3,6 @@ package org.reflections.scanners;
 import javassist.bytecode.ClassFile;
 import org.reflections.vfs.Vfs;
 
-import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +15,6 @@ public interface Scanner {
     List<Map.Entry<String, String>> scan(ClassFile classFile);
 
     /** scan the given {@code file} and produces list of {@link Map.Entry} key/values */
-    @Nullable
     default List<Map.Entry<String, String>> scan(Vfs.File file) {
         return null;
     }

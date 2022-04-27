@@ -108,9 +108,7 @@ public abstract class ClasspathHelper {
                     }
                 }
             } catch (IOException e) {
-                if (Reflections.log != null) {
-                    Reflections.log.error("error getting resources for " + resourceName, e);
-                }
+                e.printStackTrace();
             }
         }
         return distinctUrls(result);
