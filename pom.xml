@@ -86,19 +86,6 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.3.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
                         <version>1.6.8</version>
@@ -136,17 +123,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <instructions>
-                        <!-- Do not import javax.annotation as we only need these at compile time -->
-                        <Import-Package>
-                            org.jboss.vfs.*;resolution:=optional,
-                            !javax.annotation,
-                            *
-                        </Import-Package>
-                        <Bundle-SymbolicName>org.reflections</Bundle-SymbolicName>
-                    </instructions>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
