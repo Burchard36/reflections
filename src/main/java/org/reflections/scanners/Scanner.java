@@ -6,16 +6,10 @@ import org.reflections.vfs.Vfs;
 import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Scanner {@link #scan(ClassFile)} method receives a {@link ClassFile} and produce a list of {@link Map.Entry}.
- * These key/values will be stored under {@link #index()} for querying.
- * <br><br>see more in {@link Scanners}
- * */
 public interface Scanner {
 
     /** scan the given {@code classFile} and produces list of {@link Map.Entry} key/values */
@@ -44,11 +38,4 @@ public interface Scanner {
         return keys.stream().map(key -> entry(key, value)).collect(Collectors.toList());
     }
 
-    default List<Map.Entry<String, String>> entries(String key, String value) {
-        return Collections.singletonList(entry(key, value));
-    }
-
-    default List<Map.Entry<String, String>> entries(String key, Collection<String> values) {
-        return values.stream().map(value -> entry(key, value)).collect(Collectors.toList());
-    }
 }

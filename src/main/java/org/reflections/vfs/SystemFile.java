@@ -10,6 +10,7 @@ public class SystemFile implements Vfs.File {
     private final java.io.File file;
 
     public SystemFile(final SystemDir root, java.io.File file) {
+        System.out.println("Initalizing new SystemFile");
         this.root = root;
         this.file = file;
     }

@@ -164,9 +164,4 @@ public interface NameHelper {
 	default <T> Collection<T> forNames(Collection<String> names, Class<T> resultType, ClassLoader... loaders) {
 		return names.stream().map(name -> forName(name, resultType, loaders)).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
-
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	default Collection<Class<?>> forNames(Collection<String> names, ClassLoader... loaders) {
-		return forNames(names, (Class) Class.class, loaders);
-	}
 }

@@ -5,7 +5,6 @@ import org.reflections.Store;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,17 +13,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * sam function for store query {@code apply(C) -> Set<T>}
- * <pre>{@code QueryFunction<T> query = ctx -> ctx.get(key) }</pre>
- * <p>supports functional composition {@link #filter(Predicate)}, {@link #map(Function)}, {@link #flatMap(Function)}, ...
- */
 public interface QueryFunction<C, T> extends Function<C, Set<T>>, NameHelper {
 	/* @inherited */
 	Set<T> apply(C ctx);
 
-	static <C, T> QueryFunction<Store, T> empty() { return ctx -> Collections.emptySet(); }
-	static <C, T> QueryFunction<Store, T> single(T element) { return ctx -> Collections.singleton(element); }
 	static <C, T> QueryFunction<Store, T> set(Collection<T> elements) { return ctx -> new LinkedHashSet<>(elements); }
 
 	/** filter by predicate <pre>{@code SubTypes.of(type).filter(withPrefix("org"))}</pre>*/
@@ -32,15 +24,6 @@ public interface QueryFunction<C, T> extends Function<C, Set<T>>, NameHelper {
 		return ctx -> apply(ctx).stream().filter(predicate).collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
-	/** map by function <pre>{@code TypesAnnotated.with(annotation).asClass().map(Annotation::annotationType)}</pre>*/
-	default <R> QueryFunction<C, R> map(Function<? super T, ? extends R> function) {
-		return ctx -> apply(ctx).stream().map(function).collect(Collectors.toCollection(LinkedHashSet::new));
-	}
-
-	/** flatmap by function <pre>{@code QueryFunction<Method> methods = SubTypes.of(type).asClass().flatMap(Methods::of)}</pre> */
-	default <R> QueryFunction<C, R> flatMap(Function<T, ? extends Function<C, Set<R>>> function) {
-		return ctx -> apply(ctx).stream().flatMap(t -> function.apply(t).apply(ctx).stream()).collect(Collectors.toCollection(LinkedHashSet::new));
-	}
 
 	/** transitively get all by {@code builder} <pre>{@code SuperTypes.of(type).getAll(Annotations::get)}</pre>*/
 	default QueryFunction<C, T> getAll(Function<T, QueryFunction<C, T>> builder) {
@@ -80,22 +63,5 @@ public interface QueryFunction<C, T> extends Function<C, Set<T>>, NameHelper {
 					apply.stream().map(t -> (R) t).collect(Collectors.toCollection(LinkedHashSet::new))
 			).orElse(apply);
 		};
-	}
-
-	/** convert elements to {@code Class} using {@link NameHelper#forName(java.lang.String, java.lang.Class, java.lang.ClassLoader...)}
-	 * <pre>{@code SubTypes.of(type).asClass()}</pre> */
-	default <R> QueryFunction<C, Class<?>> asClass(ClassLoader... loaders) {
-		// noinspection unchecked
-		return ctx -> ((Set<Class<?>>) forNames((Set) apply(ctx), Class.class, loaders));
-	}
-
-	/** convert elements to String using {@link NameHelper#toName(AnnotatedElement)}*/
-	default QueryFunction<C, String> asString() {
-		return ctx -> new LinkedHashSet<>(toNames((AnnotatedElement) apply(ctx)));
-	}
-
-	/** cast elements as {@code <R>} unsafe */
-	default <R> QueryFunction<C, Class<? extends R>> as() {
-		return ctx -> new LinkedHashSet<>((Set<? extends Class<R>>) apply(ctx));
 	}
 }
